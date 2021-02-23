@@ -13,35 +13,53 @@ if (localStorage.getItem("myHouse") == null){
     document.write(JSON.stringify(db))
     localStorage.setItem("myHouse", JSON.stringify(db))
     document.write("Db initialized.")
-}else{
-    document.write("db loaded")
-    db = localStorage.getItem("myHouse")
-    parsd = JSON.parse(db)
-    for (x in parsd){
-        document.write(x)
-        for(y in parsd[x]){
-            document.write(y)
+}
+
+function displayDatabase(){
+    places = Object.keys(localStorage)
+    for(place in places){
+        headerEl = document.createElement('h4')
+        headText = document.createTextNode(places[place])
+        headerEl.appendChild(headText)
+        document.body.appendChild(headerEl)
+
+        data = JSON.parse(localStorage.getItem(places[place]))
+        keysOne = Object.keys(data)
+        pElement = document.createElement('p')
+        for (item in keysOne){
+            pElement.appendChild(document.createTextNode(keysOne[item]))
+            pElement.appendChild(document.createElement('br'))
+            roomObjects = Object.keys(data[keysOne[item]])
+            listElement = document.createElement("ul")
+            for (objectNum in roomObjects){
+                listItem = document.createElement("li")
+                listItem.appendChild(document.createTextNode(roomObjects[objectNum]))
+
+                storedItems = data[keysOne[item]][roomObjects[objectNum]]
+                storedItemList = document.createElement('ul')
+                for (object in storedItems){
+                    objectItem = document.createElement('li')
+                    objectItem.appendChild(document.createTextNode(storedItems[object]))
+                    storedItemList.appendChild(objectItem)
+                }
+                listItem.appendChild(storedItemList)
+
+                listElement.appendChild(listItem)
+
+                
+            }
+            pElement.appendChild(listElement)
+            pElement.appendChild(document.createElement('br'))
         }
+        document.body.appendChild(pElement)
     }
 }
 
-if(!window.indexedDB) {
+function addPlace(){
+    nameValue = document.getElementById("field").value
+    document.body.innerHTML += nameValue
+    if(localStorage.getItem(nameValue) == null){
+        localStorage.setItem(nameValue, "")
+    }
 
-    document.write("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.")
-}
-
-var db
-request = indexedDB.open("Jenga")
-
-request.onerror = function(event){
-    console.log("How dare you not allow me to make a base of data")
-}
-
-request.onsuccess = function(event){
-    db = event.target.result;
-    document.body.innerHTML +="hah"
-}
-
-db.onerror = function(event) {
-    console.error("Database error: " + event.target.errorCode);
 }
