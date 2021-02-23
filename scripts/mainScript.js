@@ -24,3 +24,24 @@ if (localStorage.getItem("myHouse") == null){
         }
     }
 }
+
+if(!window.indexedDB) {
+
+    document.write("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.")
+}
+
+var db
+request = indexedDB.open("Jenga")
+
+request.onerror = function(event){
+    console.log("How dare you not allow me to make a base of data")
+}
+
+request.onsuccess = function(event){
+    db = event.target.result;
+    document.body.innerHTML +="hah"
+}
+
+db.onerror = function(event) {
+    console.error("Database error: " + event.target.errorCode);
+}
