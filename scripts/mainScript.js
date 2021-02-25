@@ -39,11 +39,22 @@ function displayDatabase(){
 
                 storedItems = data[keysOne[item]][roomObjects[objectNum]]
                 storedItemList = document.createElement('ul')
-                for (object in storedItems){
-                    objectItem = document.createElement('li')
-                    objectItem.appendChild(document.createTextNode(storedItems[object]))
-                    storedItemList.appendChild(objectItem)
+                if(storedItems.length != undefined ){
+                    for (object in storedItems){
+                        objectItem = document.createElement('li')
+                        objectItem.appendChild(document.createTextNode(storedItems[object]))
+                        storedItemList.appendChild(objectItem)
+                    }
+                }else{
+                    allItems = Object.keys(storedItems)
+
+                    for(item in allItems){
+                        objectItem = document.createElement('li')
+                        objectItem.appendChild(document.createTextNode(allItems[item] + ": " + storedItems[allItems[item]]))
+                        storedItemList.appendChild(objectItem)
+                    }
                 }
+                
                 listItem.appendChild(storedItemList)
 
                 listElement.appendChild(listItem)
@@ -119,6 +130,48 @@ function addFurniture(){
     }else{
         window.alert("That room doesn't exist.")
     }
+
+
+}
+
+function addItem(){
+    allPlaces = Object.keys(localStorage)
+    itemName = document.getElementById("field").value
+
+    place = prompt("Which place would you like to add this item to?")
+
+    if(allPlaces.includes(place)){
+        data = JSON.parse(localStorage.getItem(place))
+        allRooms = Object.keys(data)
+        room = prompt("Which room would you like to add your item to?")
+
+        if(allRooms.includes(room)){
+            allFurniture = Object.keys(data[room])
+            furniture = prompt("Which piece of furniture will store " + itemName +" ?")
+            if(allFurniture.includes(furniture)){
+                if(data[room][furniture].length != undefined){
+                data[room][furniture]={}
+                }
+                if(data[room][furniture][itemName] == null){
+                data[room][furniture][itemName] = 1
+                }else{
+                data[room][furniture][itemName] += 1    
+                }
+
+                document.body.innerHTML += "ITEM STORED!"
+                localStorage.setItem(place, JSON.stringify(data))
+            }else{
+                document.body.innerHTML += "Storage object doesn't exist"
+            }
+
+
+        }else{
+            document.body.innerHTML += "Room doesn't exist"
+        }
+    }else{
+        document.body.innerHTML += "Place doesn't exist"
+    }
+
 
 
 }
