@@ -15,13 +15,15 @@ if (localStorage.getItem("myHouse") == null){
     document.write("Db initialized.")
 }
 
-function displayDatabase(){
+function displayDatabaseObs(){
     places = Object.keys(localStorage)
+    divEl = document.createElement('div')
+    divEl.setAttribute('id',"display")
     for(place in places){
         headerEl = document.createElement('h4')
         headText = document.createTextNode(places[place])
         headerEl.appendChild(headText)
-        document.body.appendChild(headerEl)
+        divEl.appendChild(headerEl)
         
         if(localStorage.getItem(places[place]) == "") continue
 
@@ -64,33 +66,108 @@ function displayDatabase(){
             pElement.appendChild(listElement)
             pElement.appendChild(document.createElement('br'))
         }
-        document.body.appendChild(pElement)
+
+        divEl.appendChild(pElement)
+
+
+        prevDisplay = document.getElementById('display')
+
+        if(prevDisplay == null){
+            document.body.appendChild(divEl)
+        }else if(prevDisplay != null){
+            document.body.replaceChild(divEl, prevDisplay)
+        }
+        
     }
 }
 
-function addPlace(){
-    nameValue = document.getElementById("field").value
+function displayDatabase(){
+    allPlaces = Object.keys(localStorage)
+    divEl = document.createElement('div')
+    divEl.setAttribute('id',"display")
+
+    tableEl = document.createElement("table")
+
+    for(place in allPlaces){
+        placeRow = document.createElement("tr")
+        placeCell = document.createElement("td")
+        placeText = document.createTextNode(allPlaces[place])
+
+        placeCell.appendChild(placeText)
+        placeRow.appendChild(placeCell)
+
+        if(localStorage.getItem(places[place]) == "") continue
+
+        data = JSON.parse(localStorage.getItem(places[place]))
+        allRooms = Object.keys(data)
+        newRow = document.createElement("tr")
+        roomCell = document.createElement("td")
+
+        for(room in allRooms){
+            
+        }
+
+
+
+
+
+    }
+
+}
+
+function modifyPlace(modType){
+    nameValue = document.getElementById("placeName").value
     document.body.innerHTML += nameValue
-    if(localStorage.getItem(nameValue) == null){
-        localStorage.setItem(nameValue, "")
+    
+        switch(modType){
+            case "Add":
+                if(localStorage.getItem(nameValue) == null){
+                    localStorage.setItem(nameValue, "")
+                }else{
+                    document.body.innerHTML += "Place already exists."
+                }
+            break;
+            case "Del":
+                if(localStorage.getItem(nameValue) != null){
+                localStorage.removeItem(nameValue)
+                document.body.innerHTML += "Storage structure " + nameValue + " has been removed."
+                }else{
+                    document.body.innerHTML += "This place doesn't exist"
+                }
+            break;
+        }
     }
 
-}
 
-function addRoom(){
-    place = prompt("Which place are you adding this room to?")
-    roomName = document.getElementById("field").value
+
+function modifyRoom(modType){
+    place = document.getElementById("roomPlace").value
+    roomName = document.getElementById("roomName").value
 
     allPlaces = Object.keys(localStorage)
-
+    
     if(allPlaces.includes(place)){
+
         if(localStorage.getItem(place) != ""){
         placeData = JSON.parse(localStorage.getItem(place))
         }else{
            placeData = {}
         }
-        placeData[roomName] = ""
-        localStorage.setItem(place, JSON.stringify(placeData))
+        switch(modType){
+            case "Add":
+                placeData[roomName] = ""
+                localStorage.setItem(place, JSON.stringify(placeData))
+            break;
+            case "Del":
+                allRooms = Object.keys(placeData)
+                if(allRooms.includes(roomName)){
+                    delete placeData[roomName];
+                    localStorage.setItem(place, JSON.stringify(placeData))
+                }else{
+                    document.body.innerHTML += "This room doesn't exist"
+                }
+            break;
+        }
     }else{
 
         window.alert("The place " + place + " doesn't exist")
@@ -98,11 +175,11 @@ function addRoom(){
     }
 }
 
-function addFurniture(){
+function modifyFurniture(modType){
     
     allPlaces = Object.keys(localStorage)
 
-    place = prompt("Which place would you like to add this piece of furniture?")
+    place = document.getElementById('furniturePlace').value
 
     if(allPlaces.includes(place)){
         if(localStorage.getItem(place) != ""){
@@ -118,14 +195,28 @@ function addFurniture(){
         window.alert("This place doesn't have any rooms.")
     }
 
-    room = prompt("Which room in " + place + " would you like to add this piece of furniture?")
+    room = document.getElementById('furnitureRoom').value
     if(allRooms.includes(room)){
-    furnitureName = document.getElementById("field").value
-    placeData[room] = {}
-    placeData[room][furnitureName] = ""
+        
 
-    localStorage.setItem(place, JSON.stringify(placeData))
-    window.alert("Furniture successfuly added.")
+        furnitureName = document.getElementById("furnitureName").value
+        switch(modType){
+            case "Add":
+                placeData[room] = {}
+                placeData[room][furnitureName] = ""
+
+                localStorage.setItem(place, JSON.stringify(placeData))
+                window.alert("Furniture successfuly added.")
+            break;
+            case "Del":
+                delete placeData[room][furnitureName]
+
+                localStorage.setItem(place, JSON.stringify(placeData))
+                window.alert(furnitureName + " removed.")
+            
+            break;
+        }
+        
 
     }else{
         window.alert("That room doesn't exist.")
@@ -134,21 +225,26 @@ function addFurniture(){
 
 }
 
-function addItem(){
+function modifyItem(modType){
     allPlaces = Object.keys(localStorage)
-    itemName = document.getElementById("field").value
+    itemName = document.getElementById("itemName").value
 
-    place = prompt("Which place would you like to add this item to?")
+    place = document.getElementById("itemPlace").value
 
     if(allPlaces.includes(place)){
         data = JSON.parse(localStorage.getItem(place))
         allRooms = Object.keys(data)
-        room = prompt("Which room would you like to add your item to?")
+        room = document.getElementById("itemRoom").value
 
         if(allRooms.includes(room)){
             allFurniture = Object.keys(data[room])
-            furniture = prompt("Which piece of furniture will store " + itemName +" ?")
+            furniture = document.getElementById('itemObject').value
             if(allFurniture.includes(furniture)){
+
+                switch(modType){
+
+                    case "Add":
+
                 if(data[room][furniture].length != undefined){
                 data[room][furniture]={}
                 }
@@ -160,6 +256,24 @@ function addItem(){
 
                 document.body.innerHTML += "ITEM STORED!"
                 localStorage.setItem(place, JSON.stringify(data))
+                break;
+                case "Del":
+
+                if(data[room][furniture][itemName] != null || data[room][furniture][itemName] > 0 ){
+                    if(data[room][furniture][itemName] - 1 != 0){
+                    data[room][furniture][itemName] -= 1
+                    }else{
+                        delete data[room][furniture][itemName]
+                    }
+
+                }else if(data[room][furniture][itemName] == undefined){
+                    delete data[room][furniture][itemName]
+                }
+                localStorage.setItem(place, JSON.stringify(data))
+
+                
+                break;
+            }
             }else{
                 document.body.innerHTML += "Storage object doesn't exist"
             }
@@ -175,3 +289,4 @@ function addItem(){
 
 
 }
+

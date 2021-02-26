@@ -9,3 +9,27 @@
 body{
     background-color: cornflowerblue;
 }
+
+#itemModification{
+    /*display: inline;*/
+}
+
+.modifyOptions{
+    display: none;
+}
+
+.modifyOptions *{
+    display:inline;
+}
+
+.modifyOptionsOff{
+
+    display: none;
+
+}
+
+.modifyOptionsOn{
+    display: block;
+}
+
+

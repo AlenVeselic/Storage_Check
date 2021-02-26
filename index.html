@@ -12,18 +12,58 @@
 <body>
 
     
-<button onclick="addPlace()">Add place</button>
-<button onclick="addRoom()">Add room</button>
-<button onclick="addFurniture()">Add furniture</button>
-<button onclick="addItem()">Add item</button>
+<button onclick="toggleOptions('placeMod')">Modify Places</button>
 
-    <input type="text" id="field" form="test">
+<button onclick="toggleOptions('roomMod')">Modify Rooms</button>
 
+<button onclick="toggleOptions('furnitureMod')">Modify furniture</button>
+
+<button onclick="toggleOptions('itemMod')">Modify Items</button>
+
+<input type="text" id="field" form="test">
 
 <button onclick="displayDatabase()">Display</button>
 
-<script src="scripts/mainScript.js">
-</script>
+<div id="placeMod" class="modifyOptions">
+    <p>Place: </p><input type="text" id="placeName">
+    <button onclick="modifyPlace('Add')">+ Place</button>
+    <button onclick="modifyPlace('Del')">- Place</button>
+</div>
+
+
+<div id="roomMod" class="modifyOptions">
+    <p>Place: </p> <input type="text" id="roomPlace">
+    <p>Room: </p> <input type="text" id="roomName">
+    <button onclick="modifyRoom('Add')">+ Room</button>
+    <button onclick="modifyRoom('Del')">- Room</button>
+</div>
+
+
+<div id="furnitureMod" class="modifyOptions">
+    <p>Place: </p> <input type="text" id="furniturePlace">
+    <p>Room: </p> <input type="text" id="furnitureRoom">
+    <p>Furniture: </p><input type="text" id="furnitureName">
+    <button onclick="modifyFurniture('Add')">+ Furniture</button>
+    <button onclick="modifyFurniture('Del')">- Furniture</button>
+</div>
+
+
+
+<div id="itemMod" class="modifyOptions">
+    <p>Place: </p> <input type="text" id="itemPlace">
+    <p>Room: </p> <input type="text" id="itemRoom">
+    <p>Furniture: </p> <input type="text" id="itemObject">
+    <p>Item: </p> <input type="text" id="itemName">
+    <button onclick="modifyItem('Add')">+ Item</button>
+    <button onclick="modifyItem('Del')">- Item</button>
+
+</div>
+
+
+    
+
+<script src="scripts/mainScript.js"></script>
+<script src="scripts/cssScript.js"></script>
 
 </body>
 </html>
