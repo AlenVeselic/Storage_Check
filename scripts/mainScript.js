@@ -87,6 +87,7 @@ function displayDatabase(){
     divEl.setAttribute('id',"display")
 
     tableEl = document.createElement("table")
+    tBodyEl = document.createElement("tbody")
 
     for(place in allPlaces){
         placeRow = document.createElement("tr")
@@ -95,23 +96,107 @@ function displayDatabase(){
 
         placeCell.appendChild(placeText)
         placeRow.appendChild(placeCell)
+        tBodyEl.appendChild(placeRow)
 
-        if(localStorage.getItem(places[place]) == "") continue
+        if(localStorage.getItem(allPlaces[place]) == "") continue
 
-        data = JSON.parse(localStorage.getItem(places[place]))
+        data = JSON.parse(localStorage.getItem(allPlaces[place]))
         allRooms = Object.keys(data)
-        newRow = document.createElement("tr")
-        roomCell = document.createElement("td")
+        emptyRow = document.createElement('tr')
+        tBodyEl.appendChild(emptyRow)
+
+        
+
 
         for(room in allRooms){
+            newRow = document.createElement("tr")
+            emptyCell = document.createElement("td")
+            roomCell = document.createElement("td")
+            roomName = document.createTextNode(allRooms[room])
             
+            
+            roomCell.appendChild(roomName)
+            newRow.appendChild(emptyCell)
+            newRow.appendChild(roomCell)
+
+            tBodyEl.appendChild(newRow)
+
+            allObjects = Object.keys(data[allRooms[room]])
+            freshRow = document.createElement("tr")
+            tBodyEl.appendChild(freshRow)
+
+            for(object in allObjects){
+
+                objectRow = document.createElement("tr")
+                i = 2
+                while(i != 0){
+
+                    emptyCell = document.createElement('td')
+                    objectRow.appendChild(emptyCell)
+
+                    i -= 1;
+
+                }
+
+                objectCell = document.createElement('td')
+                objectText = document.createTextNode(allObjects[object])
+
+                objectCell.appendChild(objectText)
+                objectRow.appendChild(objectCell)
+
+                tBodyEl.appendChild(objectRow)
+
+                if(data[allRooms[room]][allObjects[object]] == undefined){
+                allItems = Object.keys(data[allRooms[room]][allObjects[object]])
+                }else{
+                    allItems = data[allRooms[room]][allObjects[object]]
+                }
+
+
+
+                for(item in allItems){
+                    itemRow = document.createElement('tr')
+                    i = 3
+                    while(i != 0){
+
+                        emptyCell = document.createElement('td')
+                        itemRow.appendChild(emptyCell)
+
+                        i -= 1
+
+                    }
+
+                    itemCell = document.createElement('td')
+                    
+                    if(allItems[item].length == undefined && !Array.isArray(allItems[item])){
+                        itemText = document.createTextNode(item + ": " + allItems[item])
+                    }else{
+                        itemText = document.createTextNode(allItems[item])
+                    }
+
+                    itemCell.appendChild(itemText)
+                    itemRow.appendChild(itemCell)
+                    tBodyEl.appendChild(itemRow)
+
+                }
+
+
+
+
+
+
+            }
+
+
+
+
+         
         }
 
-
-
-
-
     }
+
+    tableEl.appendChild(tBodyEl)
+    document.body.appendChild(tableEl)
 
 }
 
