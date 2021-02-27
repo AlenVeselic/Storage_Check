@@ -94,9 +94,28 @@ function displayDatabase(){
         placeCell = document.createElement("td")
         placeText = document.createTextNode(allPlaces[place])
 
+        hrRow = document.createElement('tr')
+        i = 4
+        while(i != 0){
+
+            hrEl= document.createElement('hr')
+            hrCell = document.createElement('td')
+            hrCell.appendChild(hrEl)
+            hrRow.appendChild(hrCell)
+
+            i -= 1
+
+        }
+
+        
+
         placeCell.appendChild(placeText)
         placeRow.appendChild(placeCell)
+        tBodyEl.appendChild(hrRow)
         tBodyEl.appendChild(placeRow)
+        
+
+        
 
         if(localStorage.getItem(allPlaces[place]) == "") continue
 
@@ -174,9 +193,13 @@ function displayDatabase(){
                         itemText = document.createTextNode(allItems[item])
                     }
 
+                    
                     itemCell.appendChild(itemText)
                     itemRow.appendChild(itemCell)
                     tBodyEl.appendChild(itemRow)
+                    
+
+                    
 
                 }
 
@@ -192,9 +215,10 @@ function displayDatabase(){
 
          
         }
-
+        
+        
     }
-
+    
     tableEl.appendChild(tBodyEl)
     document.body.appendChild(tableEl)
 
@@ -367,6 +391,7 @@ function modifyItem(modType){
         }else{
             document.body.innerHTML += "Room doesn't exist"
         }
+    
     }else{
         document.body.innerHTML += "Place doesn't exist"
     }
