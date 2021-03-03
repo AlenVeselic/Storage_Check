@@ -11,6 +11,39 @@
 </head>
 <body>
 
+    <div id="traversal">
+        f
+
+        <div id="modifyTab" class="dbDivs">
+            <button onclick="cycleDivs('Places')">Modify DB</button>
+
+            
+        </div>
+
+        <div id="Places" class="dbDivs">
+            Places
+            <button onclick="cycleDivs('modifyTab')"><p>"<--"</p></button>
+
+        </div>
+
+        <div id="Rooms" class="dbDivs">
+            Rooms
+            <button onclick="cycleDivs('Places')"><p>"<--"</p></button>
+        </div>
+
+        <div id="Objects" class="dbDivs">
+            Objects
+
+            <button onclick="cycleDivs('Rooms')"><p>"<--"</p></button>
+        </div>
+
+        <div id="Items" class="dbDivs">
+            Items
+            <button onclick="cycleDivs('Objects')"><p>"<--"</p></button>
+        </div>
+
+    </div>
+
     
 <button onclick="toggleOptions('placeMod')">Modify Places</button>
 

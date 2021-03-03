@@ -15,6 +15,8 @@ if (localStorage.getItem("myHouse") == null){
     document.write("Db initialized.")
 }
 
+// localStorage.setItem("places", "Treehouse,Garage,myHouse,Fort")
+
 function displayDatabaseObs(){
     places = Object.keys(localStorage)
     divEl = document.createElement('div')
@@ -82,7 +84,8 @@ function displayDatabaseObs(){
 }
 
 function displayDatabase(){
-    allPlaces = Object.keys(localStorage)
+    allPlaces = []
+    allPlaces = localStorage.getItem('places').split(',')
     divEl = document.createElement('div')
     divEl.setAttribute('id',"display")
 
@@ -232,6 +235,10 @@ function modifyPlace(modType){
             case "Add":
                 if(localStorage.getItem(nameValue) == null){
                     localStorage.setItem(nameValue, "")
+                    places = localStorage.getItem('places').split(',')
+                    places.push(nameValue)
+                    localStorage.setItem('places', places.join())
+                    
                 }else{
                     document.body.innerHTML += "Place already exists."
                 }
@@ -398,5 +405,171 @@ function modifyItem(modType){
 
 
 
+}
+
+document.getElementById('traversal').onload = cycleDivs('modifyTab')
+
+function cycleDivs(currentDiv){
+
+    showDiv = document.getElementById(currentDiv)
+
+    allDivs = document.getElementsByClassName("dbDivs")
+
+    for(divNum = 0; divNum < allDivs.length; divNum ++){
+
+        allDivs[divNum].classList.add('modifyOptionsOff')
+    }
+
+    showDiv.classList.remove('modifyOptionsOff')
+
+    switch(currentDiv){
+        case "Places":
+            if(document.getElementById("placeButtons") == null){
+            buttons = document.createElement('div')
+            buttons.id = "placeButtons"
+            allPlaces = localStorage.getItem('places').split(',')
+
+            
+            for(place in allPlaces){
+                newButton = document.createElement('button')
+                newButton.onclick = function() {setChosenPlace(this.innerHTML); cycleDivs("Rooms");}
+                newButton.appendChild(document.createTextNode(allPlaces[place]))
+                buttons.appendChild(newButton)
+            }
+
+
+            showDiv.appendChild(buttons)
+        }
+        break;
+        case "Rooms":
+
+            
+
+                buttons = document.createElement('div')
+                buttons.id = "roomButtons"
+
+                if(localStorage.getItem(getChosenPlace()) != ""){
+                    data = JSON.parse(localStorage.getItem(getChosenPlace()))
+                
+                    allRooms = Object.keys(data)
+
+                    for(room in allRooms){
+                        newButton = document.createElement('button')
+                        newButton.onclick = function() {setChosenRoom(this.innerHTML); cycleDivs("Objects") }
+                        newButton.appendChild(document.createTextNode(allRooms[room]))
+                        buttons.appendChild(newButton)
+                    }
+                }else{
+                    buttons.innerHTML += "This place is empty"
+                }
+            if(document.getElementById("roomButtons") == null){
+                showDiv.appendChild(buttons)
+            }else{
+                showDiv.replaceChild(buttons, document.getElementById('roomButtons'))
+            }
+        break;
+        case "Objects":
+
+            data = JSON.parse(localStorage.getItem(getChosenPlace()))
+
+            generateFreshDiv("object", Object.keys(data[getChosenRoom()]))
+    
+        break;
+
+        case "Items":
+            data = JSON.parse(localStorage.getItem(getChosenPlace()))
+
+            if(data[getChosenRoom()][getChosenObject()].length == undefined){
+
+            items = Object.keys(data[getChosenRoom()][getChosenObject()])
+            }else{
+                items = data[getChosenRoom()][getChosenObject()]
+            }
+
+            listEl = document.createElement('ul')
+            listEl.id ="itemList"
+            
+
+            for(itemName in items){
+
+                itemEl = document.createElement('li')
+
+                if(data[getChosenRoom()][getChosenObject()].length != undefined){
+                    itemEl.appendChild(document.createTextNode(items[itemName]))
+                }else{
+                    itemEl.appendChild(document.createTextNode(items[itemName] + ": " + data[getChosenRoom()][getChosenObject()][items[itemName]]))
+                }
+                listEl.appendChild(itemEl)
+            }
+
+
+            prevItemList = document.getElementById("itemList")
+
+            if(prevItemList == null){
+                document.getElementById('Items').appendChild(listEl)
+            }else{
+                document.getElementById('Items').replaceChild(listEl, prevItemList)
+            }
+    }
+}
+
+function capitalizeWord(theWord){
+    return theWord.replace(/^\w/, (c) => c.toUpperCase());
+}
+
+
+function generateFreshDiv(caseType, dataObj){
+
+    buttons = document.createElement('div')
+
+    buttons.id = caseType + "Buttons"
+
+    functionName = "setChosen" + capitalizeWord(caseType)
+
+
+    for(item in dataObj){
+        newButton = document.createElement('button')
+        newButton.onclick = function() {window[functionName](this.innerHTML); cycleDivs("Items") }
+        newButton.appendChild(document.createTextNode(dataObj[item]))
+        buttons.appendChild(newButton)
+    }
+
+    addButton = document.createElement('button')
+    addText = document.createTextNode('+')
+    addButton.appendChild(addText)
+    buttons.appendChild(addButton)
+
+    if(document.getElementById(caseType + "Buttons") == null){
+        showDiv.appendChild(buttons)
+    }else{
+        showDiv.replaceChild(buttons, document.getElementById(caseType + 'Buttons'))
+    }
+
+
+
+}
+
+function setChosenPlace(placeName){
+    localStorage.setItem("chosenPlace", placeName)
+}
+
+function getChosenPlace(){
+    return localStorage.getItem("chosenPlace")
+}
+
+function setChosenRoom(roomName){
+    localStorage.setItem("chosenRoom", roomName)
+}
+
+function getChosenRoom(){
+    return localStorage.getItem("chosenRoom")
+}
+
+function setChosenObject(objectName){
+    localStorage.setItem("chosenObject", objectName)
+}
+
+function getChosenObject(){
+    return localStorage.getItem("chosenObject")
 }
 
