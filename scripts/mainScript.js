@@ -15,6 +15,61 @@ if (localStorage.getItem("myHouse") == null){
     document.write("Db initialized.")
 }
 
+traversalDivs = document.getElementById("traversal").getElementsByTagName('div')
+
+for(elNum = 0; elNum < traversalDivs.length; elNum ++){
+    if(traversalDivs[elNum].hasAttribute('id')){
+    switch(traversalDivs[elNum].id){
+        case "Places":
+
+        buttonEl = traversalDivs[elNum].getElementsByClassName('back')[0]
+        buttonEl.onclick = function () {
+
+                                        setChosenPlace("");
+                                        cycleDivs('modifyTab')
+
+                                        }
+
+        break;
+        case "Rooms":
+
+            buttonEl = traversalDivs[elNum].getElementsByClassName('back')[0]
+            buttonEl.onclick = function () {
+    
+                                            setChosenRoom("");
+                                            cycleDivs('Places')
+    
+                                            }
+
+
+        break;
+        case "Objects":
+
+            buttonEl = traversalDivs[elNum].getElementsByClassName('back')[0]
+            buttonEl.onclick = function () {
+    
+                                            setChosenObject("");
+                                            cycleDivs('Rooms')
+    
+                                            }
+        
+        break;
+        case "Items":
+            buttonEl = traversalDivs[elNum].getElementsByClassName('back')[0]
+        buttonEl.onclick = function () {
+                                        cycleDivs('Objects')
+
+                                        }
+
+        break;
+    }
+
+    }
+}
+
+
+
+
 // localStorage.setItem("places", "Treehouse,Garage,myHouse,Fort")
 
 function displayDatabaseObs(){
@@ -424,7 +479,10 @@ function cycleDivs(currentDiv){
 
     switch(currentDiv){
         case "Places":
-            if(document.getElementById("placeButtons") == null){
+
+            generateFreshDiv("place", localStorage.getItem('places').split(','))
+
+           /* if(document.getElementById("placeButtons") == null){
             buttons = document.createElement('div')
             buttons.id = "placeButtons"
             allPlaces = localStorage.getItem('places').split(',')
@@ -439,12 +497,15 @@ function cycleDivs(currentDiv){
 
 
             showDiv.appendChild(buttons)
-        }
+        } */
         break;
         case "Rooms":
 
-            
+            data = JSON.parse(localStorage.getItem(getChosenPlace()))
 
+            generateFreshDiv("room", Object.keys(data))
+            
+        /*
                 buttons = document.createElement('div')
                 buttons.id = "roomButtons"
 
@@ -467,7 +528,9 @@ function cycleDivs(currentDiv){
             }else{
                 showDiv.replaceChild(buttons, document.getElementById('roomButtons'))
             }
+            */
         break;
+
         case "Objects":
 
             data = JSON.parse(localStorage.getItem(getChosenPlace()))
@@ -517,6 +580,14 @@ function capitalizeWord(theWord){
     return theWord.replace(/^\w/, (c) => c.toUpperCase());
 }
 
+function getNextState(currentState){
+    states = ["Places", "Rooms", "Objects", "Items"]
+    currentIndex = states.indexOf(currentState)
+
+    return states[currentIndex + 1]
+
+}
+
 
 function generateFreshDiv(caseType, dataObj){
 
@@ -524,20 +595,23 @@ function generateFreshDiv(caseType, dataObj){
 
     buttons.id = caseType + "Buttons"
 
-    functionName = "setChosen" + capitalizeWord(caseType)
+    capitalizedCase = capitalizeWord(caseType)
+    functionName = "setChosen" + capitalizedCase
 
 
     for(item in dataObj){
         newButton = document.createElement('button')
-        newButton.onclick = function() {window[functionName](this.innerHTML); cycleDivs("Items") }
+        newButton.onclick = function() {window[functionName](this.innerHTML); cycleDivs(getNextState(capitalizedCase + "s")) }
         newButton.appendChild(document.createTextNode(dataObj[item]))
         buttons.appendChild(newButton)
     }
+
 
     addButton = document.createElement('button')
     addText = document.createTextNode('+')
     addButton.appendChild(addText)
     buttons.appendChild(addButton)
+
 
     if(document.getElementById(caseType + "Buttons") == null){
         showDiv.appendChild(buttons)
