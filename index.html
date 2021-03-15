@@ -8,20 +8,32 @@
 <meta name="description" content="">
 <meta name="keywords" content="">
 <link href="styles/stylePrime.css" rel="stylesheet" type="text/css">
+
+<!--
+    Storage check, a client side web app that keeps of all inventory in each storage space you may have. If you have items that
+    perish over time it also makes sure that when those items are out or are about to run out (minimum amount before notification)
+    it assembles a grocery list for you.
+-->
+
 </head>
 <body>
 
-    <div id="traversal">
-        f
 
-        <div id="modifyTab" class="dbDivs">
+    <!--
+        This div is my second means of implementing an interface with the database saved in local storage. At this point you can only walk through the base,
+        in the end getting to a list of items within a storage object. The divs within the traversal div are in the order the user would go down a database, most of the work
+        being done in JS.
+    -->
+    <div id="traversal">
+
+        <div id="modifyTab" class="dbDivs"> <!-- Initiates the modification procedure-->
             <button onclick="cycleDivs('Places')">Modify DB</button>
 
             
         </div>
 
 
-        <div id="Places" class="dbDivs">
+        <div id="Places" class="dbDivs"> <!-- In this one the user chooses a place to go onto the next tab or to go back-->
             Places
             <button class="back"><p>"<--"</p></button>
 
@@ -45,6 +57,22 @@
 
     </div>
 
+<!--This section is the first way of modifiying/interacting with the underlying database in local storage.
+    It has addition and deletion of each separate category(place, room, object, items) and a way of displaying
+    the entire inventory tree.
+
+    The implementation of this wasn't that hard, most visual work being with the display and toggling
+    the display of each separate modification section. This way of interaction was mostly for testing
+    purposes since it seems to visually to "debuggy" and since I'm trying to get this to work well on mobile
+    it wouldn't be really that intuitive for that platform. 
+    This was my first try at web app development and since before I was trying to make these in Python
+    having the gui be in TkInter, it felt a lot easier.-->
+
+<!--
+    Another way I tackled modification which felt a bit archaic was having one text field and getting the extra
+    information I needed by using dialog prompts and getting the missing info from that. They felt like a bit
+    too much and I think getting information can be done more elegantly.
+-->
     
 <button onclick="toggleOptions('placeMod')">Modify Places</button>
 
@@ -95,7 +123,10 @@
 
 
     
-
+<!-- Importing scripts:
+    mainScript - data management and the main algorithm might in the future be here, although seeing as it is already huge I might make a third script
+    for the grocery list algorithm.
+    cssScript - nothing but the display toggle for the traversal divs here at this point-->
 <script src="scripts/mainScript.js"></script>
 <script src="scripts/cssScript.js"></script>
 
