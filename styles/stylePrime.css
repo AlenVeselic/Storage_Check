@@ -1,11 +1,19 @@
 @charset "UTF-8";
 /**
  * Description
- * @authors Your Name (you@example.org)
+ * @author Alen Veselič (contact me on git)
  * @date    2021-02-18 18:46:14
  * @version 1.0.0
  */
 
+
+/*
+    All color choices in this version of the css file are temporary and mostly for the use of dividing div positioning
+    and layouting.
+    The modify options subclasses are there for toggling visibility,
+    while the main class is for positioning behaviour.
+
+*/
 body{
     background-color: cornflowerblue;
 }

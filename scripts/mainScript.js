@@ -1,3 +1,13 @@
+/*
+This script holds most of the web app code. Thinking wether I want to separate this script which is mostly
+database interaction and the future grocery list assembly code for greater readability, since this one is already
+almost 600 lines long. I also have to move the display methods to cssScript eventually.
+*/
+
+
+/*
+This check wether a database already exists, if it doesn't it establishes an example base.
+*/
 if (localStorage.getItem("myHouse") == null){
     document.write("The db is empty")
     db = {
@@ -15,6 +25,10 @@ if (localStorage.getItem("myHouse") == null){
     document.write("Db initialized.")
 }
 
+
+/*
+This gets each div in traversal and assigns the appropriate listeners with functions for each
+*/
 traversalDivs = document.getElementById("traversal").getElementsByTagName('div')
 
 for(elNum = 0; elNum < traversalDivs.length; elNum ++){
@@ -67,92 +81,42 @@ for(elNum = 0; elNum < traversalDivs.length; elNum ++){
     }
 }
 
+/*
 
+Under here is the basic display method used when you press the display button.
 
+It is assembled by creating a table and either entering empty spaces or values into their appropriate cells
+by looping through the entire database.
 
-// localStorage.setItem("places", "Treehouse,Garage,myHouse,Fort")
-
-function displayDatabaseObs(){
-    places = Object.keys(localStorage)
-    divEl = document.createElement('div')
-    divEl.setAttribute('id',"display")
-    for(place in places){
-        headerEl = document.createElement('h4')
-        headText = document.createTextNode(places[place])
-        headerEl.appendChild(headText)
-        divEl.appendChild(headerEl)
-        
-        if(localStorage.getItem(places[place]) == "") continue
-
-        data = JSON.parse(localStorage.getItem(places[place]))
-        keysOne = Object.keys(data)
-        pElement = document.createElement('p')
-        for (item in keysOne){
-            pElement.appendChild(document.createTextNode(keysOne[item]))
-            pElement.appendChild(document.createElement('br'))
-            roomObjects = Object.keys(data[keysOne[item]])
-            listElement = document.createElement("ul")
-            for (objectNum in roomObjects){
-                listItem = document.createElement("li")
-                listItem.appendChild(document.createTextNode(roomObjects[objectNum]))
-
-                storedItems = data[keysOne[item]][roomObjects[objectNum]]
-                storedItemList = document.createElement('ul')
-                if(storedItems.length != undefined ){
-                    for (object in storedItems){
-                        objectItem = document.createElement('li')
-                        objectItem.appendChild(document.createTextNode(storedItems[object]))
-                        storedItemList.appendChild(objectItem)
-                    }
-                }else{
-                    allItems = Object.keys(storedItems)
-
-                    for(item in allItems){
-                        objectItem = document.createElement('li')
-                        objectItem.appendChild(document.createTextNode(allItems[item] + ": " + storedItems[allItems[item]]))
-                        storedItemList.appendChild(objectItem)
-                    }
-                }
-                
-                listItem.appendChild(storedItemList)
-
-                listElement.appendChild(listItem)
-
-                
-            }
-            pElement.appendChild(listElement)
-            pElement.appendChild(document.createElement('br'))
-        }
-
-        divEl.appendChild(pElement)
-
-
-        prevDisplay = document.getElementById('display')
-
-        if(prevDisplay == null){
-            document.body.appendChild(divEl)
-        }else if(prevDisplay != null){
-            document.body.replaceChild(divEl, prevDisplay)
-        }
-        
-    }
-}
+*/
 
 function displayDatabase(){
-    allPlaces = []
+
+
+
+    allPlaces = [] // save an empty array to store places in
+    //get all the places from the "places" key in localstorage and split them by commas
     allPlaces = localStorage.getItem('places').split(',')
-    divEl = document.createElement('div')
+    // create the div that would hold the entire database display and give it the appropriate id value
+    divEl = document.createElement('div') 
     divEl.setAttribute('id',"display")
 
+    //empty table creation
     tableEl = document.createElement("table")
     tBodyEl = document.createElement("tbody")
 
-    for(place in allPlaces){
-        placeRow = document.createElement("tr")
-        placeCell = document.createElement("td")
-        placeText = document.createTextNode(allPlaces[place])
+    for(place in allPlaces){ // loop through each place
+        placeRow = document.createElement("tr") // create a row for each place
+        placeCell = document.createElement("td") // create a cell for each place
+        placeText = document.createTextNode(allPlaces[place]) // create the current places text node
 
-        hrRow = document.createElement('tr')
+        hrRow = document.createElement('tr') //create a row specifically to put a horizontal line in
+
+
+        /*
+        This loop divides the contents of the table by filling up a row with horizontal lines.
+        TODO: This could also be done by assigning a border to the bottom of each place row.
+        */
         i = 4
         while(i != 0){
 
@@ -165,18 +129,25 @@ function displayDatabase(){
 
         }
 
-        
-
+        /*
+        Appends the text to the cell, the cell to the row and the row to the table.
+        Also appends the line row to the table     
+        */   
         placeCell.appendChild(placeText)
         placeRow.appendChild(placeCell)
         tBodyEl.appendChild(hrRow)
         tBodyEl.appendChild(placeRow)
         
 
-        
-
         if(localStorage.getItem(allPlaces[place]) == "") continue
+        // If the current place is an empty string, the rest of the code is skipped and we move on to the next place
 
+        /*
+        Gets the all data for the current place
+        Saves all room keys to allRooms
+        and
+        creates an empty row, appending it to the table's body
+        */
         data = JSON.parse(localStorage.getItem(allPlaces[place]))
         allRooms = Object.keys(data)
         emptyRow = document.createElement('tr')
@@ -185,25 +156,28 @@ function displayDatabase(){
         
 
 
-        for(room in allRooms){
+        for(room in allRooms){ // loops through each room displaying it's data
+            //creates a row for the current room, a cell instance for then first empty cell, and a cell instance for the room's name
             newRow = document.createElement("tr")
             emptyCell = document.createElement("td")
             roomCell = document.createElement("td")
             roomName = document.createTextNode(allRooms[room])
             
-            
+            //appends the aforementioned cells to the row and the row to the table
             roomCell.appendChild(roomName)
             newRow.appendChild(emptyCell)
             newRow.appendChild(roomCell)
 
             tBodyEl.appendChild(newRow)
 
+            //gets the rooms object keys and creates a new row, appending it to the table
             allObjects = Object.keys(data[allRooms[room]])
             freshRow = document.createElement("tr")
             tBodyEl.appendChild(freshRow)
 
-            for(object in allObjects){
+            for(object in allObjects){ // loops through each object in the room
 
+                //creates a row for the object and adds two empty spaces in front of it's name cell
                 objectRow = document.createElement("tr")
                 i = 2
                 while(i != 0){
@@ -215,6 +189,9 @@ function displayDatabase(){
 
                 }
 
+                /*
+                Creates and appends the objects name cell
+                */
                 objectCell = document.createElement('td')
                 objectText = document.createTextNode(allObjects[object])
 
@@ -223,15 +200,17 @@ function displayDatabase(){
 
                 tBodyEl.appendChild(objectRow)
 
-                if(data[allRooms[room]][allObjects[object]] == undefined){
+                // checks wether the object is an array or a json object
+                if(data[allRooms[room]][allObjects[object]] == undefined){ //if it's json it gets its keys
                 allItems = Object.keys(data[allRooms[room]][allObjects[object]])
                 }else{
-                    allItems = data[allRooms[room]][allObjects[object]]
+                    allItems = data[allRooms[room]][allObjects[object]]// otherwise it gets its value
                 }
 
 
 
-                for(item in allItems){
+                for(item in allItems){ // loops through every item in the object
+                    //creates the row for the item and similarly to all previous rows adds 3 spaces in front of the value this time
                     itemRow = document.createElement('tr')
                     i = 3
                     while(i != 0){
@@ -244,6 +223,8 @@ function displayDatabase(){
                     }
 
                     itemCell = document.createElement('td')
+
+                    // here we check wether the item is a simple value or a key value pair and display it
                     
                     if(allItems[item].length == undefined && !Array.isArray(allItems[item])){
                         itemText = document.createTextNode(item + ": " + allItems[item])
@@ -251,36 +232,25 @@ function displayDatabase(){
                         itemText = document.createTextNode(allItems[item])
                     }
 
-                    
+                    //appending the item to the table
+
                     itemCell.appendChild(itemText)
                     itemRow.appendChild(itemCell)
                     tBodyEl.appendChild(itemRow)
                     
-
-                    
-
                 }
-
-
-
-
-
-
             }
-
-
-
-
-         
-        }
-        
-        
+        }   
     }
-    
+    // finally append the entire table to the body
     tableEl.appendChild(tBodyEl)
     document.body.appendChild(tableEl)
 
 }
+
+
+//TODO: Continue comment addition
+
 
 function modifyPlace(modType){
     nameValue = document.getElementById("placeName").value
