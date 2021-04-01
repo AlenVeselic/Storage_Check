@@ -1,3 +1,10 @@
+/**
+ * Description
+ * @authors Alen Veselič ()
+ * @version 1.0.0
+ */
+
+
 /*
 This script holds most of the web app code. Thinking wether I want to separate this script which is mostly
 database interaction and the future grocery list assembly code for greater readability, since this one is already
@@ -6,11 +13,11 @@ almost 600 lines long. I also have to move the display methods to cssScript even
 
 
 /*
-This check wether a database already exists, if it doesn't it establishes an example base.
+This checks whether a database already exists, if it doesn't it establishes an example base.
 */
 if (localStorage.getItem("myHouse") == null){
     document.write("The db is empty")
-    db = {
+    var db = {
         "kitchen": {
             "drawer":["glass", "plate", "plate"],
             "fridge":["yogurt", "fish", "meat"]
@@ -27,16 +34,17 @@ if (localStorage.getItem("myHouse") == null){
 
 
 /*
-This gets each div in traversal and assigns the appropriate listeners with functions for each
+This gets each div in traversal and assigns the appropriate behaviour for the back button in each
+(going to the previous windows/div and resetting the previously chosen value)
 */
-traversalDivs = document.getElementById("traversal").getElementsByTagName('div')
+var traversalDivs = document.getElementById("traversal").getElementsByTagName('div')
 
 for(elNum = 0; elNum < traversalDivs.length; elNum ++){
-    if(traversalDivs[elNum].hasAttribute('id')){
+    if(traversalDivs[elNum].hasAttribute('id')){ 
     switch(traversalDivs[elNum].id){
         case "Places":
 
-        buttonEl = traversalDivs[elNum].getElementsByClassName('back')[0]
+        var buttonEl = traversalDivs[elNum].getElementsByClassName('back')[0]
         buttonEl.onclick = function () {
 
                                         setChosenPlace("");
@@ -47,7 +55,7 @@ for(elNum = 0; elNum < traversalDivs.length; elNum ++){
         break;
         case "Rooms":
 
-            buttonEl = traversalDivs[elNum].getElementsByClassName('back')[0]
+            var buttonEl = traversalDivs[elNum].getElementsByClassName('back')[0]
             buttonEl.onclick = function () {
     
                                             setChosenRoom("");
@@ -59,7 +67,7 @@ for(elNum = 0; elNum < traversalDivs.length; elNum ++){
         break;
         case "Objects":
 
-            buttonEl = traversalDivs[elNum].getElementsByClassName('back')[0]
+            var buttonEl = traversalDivs[elNum].getElementsByClassName('back')[0]
             buttonEl.onclick = function () {
     
                                             setChosenObject("");
@@ -69,8 +77,8 @@ for(elNum = 0; elNum < traversalDivs.length; elNum ++){
         
         break;
         case "Items":
-            buttonEl = traversalDivs[elNum].getElementsByClassName('back')[0]
-        buttonEl.onclick = function () {
+            var buttonEl = traversalDivs[elNum].getElementsByClassName('back')[0]
+            buttonEl.onclick = function () {
                                         cycleDivs('Objects')
 
                                         }
@@ -94,34 +102,35 @@ function displayDatabase(){
 
 
 
-    allPlaces = [] // save an empty array to store places in
+    var allPlaces = [] // save an empty array to store places in
+
     //get all the places from the "places" key in localstorage and split them by commas
-    allPlaces = localStorage.getItem('places').split(',')
+    var allPlaces = localStorage.getItem('places').split(',')
     // create the div that would hold the entire database display and give it the appropriate id value
-    divEl = document.createElement('div') 
+    var divEl = document.createElement('div') 
     divEl.setAttribute('id',"display")
 
     //empty table creation
-    tableEl = document.createElement("table")
-    tBodyEl = document.createElement("tbody")
+    var tableEl = document.createElement("table")
+    var tBodyEl = document.createElement("tbody")
 
     for(place in allPlaces){ // loop through each place
-        placeRow = document.createElement("tr") // create a row for each place
-        placeCell = document.createElement("td") // create a cell for each place
-        placeText = document.createTextNode(allPlaces[place]) // create the current places text node
+        var placeRow = document.createElement("tr") // create a row for each place
+        var placeCell = document.createElement("td") // create a cell for each place
+        var placeText = document.createTextNode(allPlaces[place]) // create the current places text node
 
-        hrRow = document.createElement('tr') //create a row specifically to put a horizontal line in
+        var hrRow = document.createElement('tr') //create a row specifically to put a horizontal line in
 
 
         /*
         This loop divides the contents of the table by filling up a row with horizontal lines.
         TODO: This could also be done by assigning a border to the bottom of each place row.
         */
-        i = 4
+        var i = 4
         while(i != 0){
 
-            hrEl= document.createElement('hr')
-            hrCell = document.createElement('td')
+            var hrEl= document.createElement('hr')
+            var hrCell = document.createElement('td')
             hrCell.appendChild(hrEl)
             hrRow.appendChild(hrCell)
 
@@ -148,9 +157,9 @@ function displayDatabase(){
         and
         creates an empty row, appending it to the table's body
         */
-        data = JSON.parse(localStorage.getItem(allPlaces[place]))
+        var data = JSON.parse(localStorage.getItem(allPlaces[place]))
         allRooms = Object.keys(data)
-        emptyRow = document.createElement('tr')
+        var emptyRow = document.createElement('tr')
         tBodyEl.appendChild(emptyRow)
 
         
@@ -158,10 +167,10 @@ function displayDatabase(){
 
         for(room in allRooms){ // loops through each room displaying it's data
             //creates a row for the current room, a cell instance for then first empty cell, and a cell instance for the room's name
-            newRow = document.createElement("tr")
-            emptyCell = document.createElement("td")
-            roomCell = document.createElement("td")
-            roomName = document.createTextNode(allRooms[room])
+            var newRow = document.createElement("tr")
+            var emptyCell = document.createElement("td")
+            var roomCell = document.createElement("td")
+            var roomName = document.createTextNode(allRooms[room])
             
             //appends the aforementioned cells to the row and the row to the table
             roomCell.appendChild(roomName)
@@ -171,18 +180,18 @@ function displayDatabase(){
             tBodyEl.appendChild(newRow)
 
             //gets the rooms object keys and creates a new row, appending it to the table
-            allObjects = Object.keys(data[allRooms[room]])
-            freshRow = document.createElement("tr")
+            var allObjects = Object.keys(data[allRooms[room]])
+            var freshRow = document.createElement("tr")
             tBodyEl.appendChild(freshRow)
 
             for(object in allObjects){ // loops through each object in the room
 
                 //creates a row for the object and adds two empty spaces in front of it's name cell
-                objectRow = document.createElement("tr")
-                i = 2
+                var objectRow = document.createElement("tr")
+                var i = 2
                 while(i != 0){
 
-                    emptyCell = document.createElement('td')
+                    var emptyCell = document.createElement('td')
                     objectRow.appendChild(emptyCell)
 
                     i -= 1;
@@ -192,8 +201,8 @@ function displayDatabase(){
                 /*
                 Creates and appends the objects name cell
                 */
-                objectCell = document.createElement('td')
-                objectText = document.createTextNode(allObjects[object])
+                var objectCell = document.createElement('td')
+                var objectText = document.createTextNode(allObjects[object])
 
                 objectCell.appendChild(objectText)
                 objectRow.appendChild(objectCell)
@@ -202,34 +211,34 @@ function displayDatabase(){
 
                 // checks wether the object is an array or a json object
                 if(data[allRooms[room]][allObjects[object]] == undefined){ //if it's json it gets its keys
-                allItems = Object.keys(data[allRooms[room]][allObjects[object]])
+                    var allItems = Object.keys(data[allRooms[room]][allObjects[object]])
                 }else{
-                    allItems = data[allRooms[room]][allObjects[object]]// otherwise it gets its value
+                    var allItems = data[allRooms[room]][allObjects[object]]// otherwise it gets its value
                 }
 
 
 
                 for(item in allItems){ // loops through every item in the object
                     //creates the row for the item and similarly to all previous rows adds 3 spaces in front of the value this time
-                    itemRow = document.createElement('tr')
-                    i = 3
+                    var itemRow = document.createElement('tr')
+                    var i = 3
                     while(i != 0){
 
-                        emptyCell = document.createElement('td')
+                        var emptyCell = document.createElement('td')
                         itemRow.appendChild(emptyCell)
 
                         i -= 1
 
                     }
 
-                    itemCell = document.createElement('td')
+                    var itemCell = document.createElement('td')
 
                     // here we check wether the item is a simple value or a key value pair and display it
                     
                     if(allItems[item].length == undefined && !Array.isArray(allItems[item])){
-                        itemText = document.createTextNode(item + ": " + allItems[item])
+                        var itemText = document.createTextNode(item + ": " + allItems[item])
                     }else{
-                        itemText = document.createTextNode(allItems[item])
+                        var itemText = document.createTextNode(allItems[item])
                     }
 
                     //appending the item to the table
@@ -249,27 +258,47 @@ function displayDatabase(){
 }
 
 
-//TODO: Continue comment addition
+// DATABASE MODIFICATION //
 
+/*
+    Here are all the operations that are linked to database modification located in the local storage.
+
+    This mostly consists of:
+    - parsing and stringifying the json object that is the database
+    - checking if certain values exist
+    - adding or deleting said value
+
+
+    With each item deeper in a given tree, the program gets more complex and nested.
+    TODO: Write each check as a separate component instead of having a big megalofunction for item modification 
+*/
+
+/*
+    Modify place
+ Adds or deletes a place from local storage
+
+*/
+
+// TODO: case sensitivity validation for both
 
 function modifyPlace(modType){
-    nameValue = document.getElementById("placeName").value
+    var nameValue = document.getElementById("placeName").value
     document.body.innerHTML += nameValue
     
         switch(modType){
             case "Add":
-                if(localStorage.getItem(nameValue) == null){
+                if(localStorage.getItem(nameValue) == null){ // checks if the place being added is a duplicate
                     localStorage.setItem(nameValue, "")
-                    places = localStorage.getItem('places').split(',')
+                    let places = localStorage.getItem('places').split(',')
                     places.push(nameValue)
                     localStorage.setItem('places', places.join())
                     
                 }else{
-                    document.body.innerHTML += "Place already exists."
+                    document.body.innerHTML += "Place already exists." 
                 }
             break;
             case "Del":
-                if(localStorage.getItem(nameValue) != null){
+                if(localStorage.getItem(nameValue) != null){ // if the place being deleted even exists
                 localStorage.removeItem(nameValue)
                 document.body.innerHTML += "Storage structure " + nameValue + " has been removed."
                 }else{
@@ -281,27 +310,35 @@ function modifyPlace(modType){
 
 
 
+
+
+
+
+
+
 function modifyRoom(modType){
-    place = document.getElementById("roomPlace").value
-    roomName = document.getElementById("roomName").value
+    // receives the place and room values from the DOM
+    var place = document.getElementById("roomPlace").value
+    var roomName = document.getElementById("roomName").value
 
-    allPlaces = Object.keys(localStorage)
+    var allPlaces = Object.keys(localStorage)
     
-    if(allPlaces.includes(place)){
+    if(allPlaces.includes(place)){ //checks if the place exists
 
-        if(localStorage.getItem(place) != ""){
-        placeData = JSON.parse(localStorage.getItem(place))
+        if(localStorage.getItem(place) != ""){ // checks if the place is empty/string, if so replaces the empty place with an empty json object
+            var placeData = JSON.parse(localStorage.getItem(place))
         }else{
-           placeData = {}
+            var placeData = {}
         }
         switch(modType){
-            case "Add":
-                placeData[roomName] = ""
+            case "Add": // creates an empty room and saves changes
+                placeData[roomName] = "" 
                 localStorage.setItem(place, JSON.stringify(placeData))
             break;
-            case "Del":
-                allRooms = Object.keys(placeData)
+            case "Del": // checks if the room exists
+                var allRooms = Object.keys(placeData)
                 if(allRooms.includes(roomName)){
+                    // deletes the room and saves changes
                     delete placeData[roomName];
                     localStorage.setItem(place, JSON.stringify(placeData))
                 }else{
@@ -318,38 +355,45 @@ function modifyRoom(modType){
 
 function modifyFurniture(modType){
     
-    allPlaces = Object.keys(localStorage)
+    var allPlaces = Object.keys(localStorage) 
+    /*
+    this line needs to be replaced replaced with localStorage.getItem('places'),
+     since using this removes the chance of getting other saved variables as places
+    */
 
-    place = document.getElementById('furniturePlace').value
+    var place = document.getElementById('furniturePlace').value // receives the place's name
 
+    // TODO: this could be it's own function, or better yet, make initial empty branches objects instead of empty strings
     if(allPlaces.includes(place)){
         if(localStorage.getItem(place) != ""){
-        placeData = JSON.parse(localStorage.getItem(place)) 
+            var placeData = JSON.parse(localStorage.getItem(place)) 
         }else{
-            placeData = {}
+            var placeData = {}
         }
 
     }
-    if(Object.keys(placeData) != 0){
-        allRooms = Object.keys(placeData)
+
+    if(Object.keys(placeData) != 0){ // checks if the chosen place has any rooms
+        var allRooms = Object.keys(placeData)
     }else{
-        window.alert("This place doesn't have any rooms.")
+        window.alert("This place doesn't have any rooms.") // TODO: replace window alerts with a better method of informing the user of their actions
     }
 
-    room = document.getElementById('furnitureRoom').value
-    if(allRooms.includes(room)){
+    var room = document.getElementById('furnitureRoom').value // receives the room name
+    if(allRooms.includes(room)){ // proceeds if the room exists
         
-
-        furnitureName = document.getElementById("furnitureName").value
+        var furnitureName = document.getElementById("furnitureName").value // receives the furniture value
         switch(modType){
             case "Add":
-                placeData[room] = {}
-                placeData[room][furnitureName] = ""
+                placeData[room] = {} // changes the room into a json object
+                placeData[room][furnitureName] = "" // creates the empty furniture object
 
+                // updates database and informs the user that the action had succeeded
                 localStorage.setItem(place, JSON.stringify(placeData))
                 window.alert("Furniture successfuly added.")
             break;
             case "Del":
+                //deletes the furniture object and updates the database
                 delete placeData[room][furnitureName]
 
                 localStorage.setItem(place, JSON.stringify(placeData))
@@ -366,54 +410,64 @@ function modifyFurniture(modType){
 
 }
 
+// adds or deletes an item from local storage
 function modifyItem(modType){
-    allPlaces = Object.keys(localStorage)
-    itemName = document.getElementById("itemName").value
 
-    place = document.getElementById("itemPlace").value
+    var allPlaces = Object.keys(localStorage)
+    var itemName = document.getElementById("itemName").value
+
+    var place = document.getElementById("itemPlace").value
+
+    // checks all the needed values( place -> room -> furniture ) before adding or deleting an item
 
     if(allPlaces.includes(place)){
-        data = JSON.parse(localStorage.getItem(place))
-        allRooms = Object.keys(data)
-        room = document.getElementById("itemRoom").value
+        var data = JSON.parse(localStorage.getItem(place))
+        var allRooms = Object.keys(data)
+        var room = document.getElementById("itemRoom").value
 
         if(allRooms.includes(room)){
-            allFurniture = Object.keys(data[room])
-            furniture = document.getElementById('itemObject').value
+            var allFurniture = Object.keys(data[room])
+            var furniture = document.getElementById('itemObject').value
+
             if(allFurniture.includes(furniture)){
 
                 switch(modType){
 
                     case "Add":
 
-                if(data[room][furniture].length != undefined){
-                data[room][furniture]={}
-                }
-                if(data[room][furniture][itemName] == null){
-                data[room][furniture][itemName] = 1
-                }else{
-                data[room][furniture][itemName] += 1    
-                }
+                        if(data[room][furniture].length != undefined){ // if the furniture anything but an object, turns it into one
+                            data[room][furniture]={}
+                        }
 
-                document.body.innerHTML += "ITEM STORED!"
-                localStorage.setItem(place, JSON.stringify(data))
-                break;
-                case "Del":
+                        if(data[room][furniture][itemName] == null){ // checks if the item exists
+                            data[room][furniture][itemName] = 1 
+                            // if it doesn't, there is now one of this item in this particular furniture object
+                        }else{
+                            data[room][furniture][itemName] += 1 //if it does we add another to the count 
+                        }
+                        
+                        document.body.innerHTML += "ITEM STORED!"
+                        // TODO: This is also a bad way of notifying the user of a completed task
+                        localStorage.setItem(place, JSON.stringify(data))
 
-                if(data[room][furniture][itemName] != null || data[room][furniture][itemName] > 0 ){
-                    if(data[room][furniture][itemName] - 1 != 0){
-                    data[room][furniture][itemName] -= 1
-                    }else{
-                        delete data[room][furniture][itemName]
-                    }
+                    break;
+                    case "Del":
 
-                }else if(data[room][furniture][itemName] == undefined){
-                    delete data[room][furniture][itemName]
-                }
-                localStorage.setItem(place, JSON.stringify(data))
+                        if(data[room][furniture][itemName] != null || data[room][furniture][itemName] > 0 ){ // if the item exists and isn't empty
+                            if(data[room][furniture][itemName] - 1 != 0){ // and if there is more than one of it
+                            data[room][furniture][itemName] -= 1 // subtract one of that item
+                            }else{
+                                delete data[room][furniture][itemName] 
+                                // if the item fully depletes with this operation, remove it from the furniture object altogether
+                                // TODO: Make persistent items, that stay in the furniture object after depletion and remind the user to replenish them
+                            }
 
-                
-                break;
+                        }else if(data[room][furniture][itemName] == undefined){ // if the item exists and is empty, delete it
+                            delete data[room][furniture][itemName]
+                        }
+                        localStorage.setItem(place, JSON.stringify(data))
+
+                    break;
             }
             }else{
                 document.body.innerHTML += "Storage object doesn't exist"
@@ -432,13 +486,23 @@ function modifyItem(modType){
 
 }
 
-document.getElementById('traversal').onload = cycleDivs('modifyTab')
+
+document.getElementById('traversal').onload = cycleDivs('modifyTab') // sets the base tab for traversal
+
+
+/*
+
+Cycle divs is the main function in charge of visual database traversal using the "traversal" divset.
+It accepts with which it can decide which state to move on to. (Either back, or deeper into the current tree)
+
+*/
 
 function cycleDivs(currentDiv){
 
-    showDiv = document.getElementById(currentDiv)
+    var showDiv = document.getElementById(currentDiv) // the div that is displayed next
 
-    allDivs = document.getElementsByClassName("dbDivs")
+    // gets and hides the rest of the divs, unhiding the current one
+    var allDivs = document.getElementsByClassName("dbDivs")
 
     for(divNum = 0; divNum < allDivs.length; divNum ++){
 
@@ -449,85 +513,52 @@ function cycleDivs(currentDiv){
 
     switch(currentDiv){
         case "Places":
+            // displays all places in the database
+            generateFreshDiv("place", localStorage.getItem('places').split(','), showDiv)
 
-            generateFreshDiv("place", localStorage.getItem('places').split(','))
-
-           /* if(document.getElementById("placeButtons") == null){
-            buttons = document.createElement('div')
-            buttons.id = "placeButtons"
-            allPlaces = localStorage.getItem('places').split(',')
-
-            
-            for(place in allPlaces){
-                newButton = document.createElement('button')
-                newButton.onclick = function() {setChosenPlace(this.innerHTML); cycleDivs("Rooms");}
-                newButton.appendChild(document.createTextNode(allPlaces[place]))
-                buttons.appendChild(newButton)
-            }
-
-
-            showDiv.appendChild(buttons)
-        } */
         break;
         case "Rooms":
+            //displays all rooms in a chosen place
+            var data = JSON.parse(localStorage.getItem(getChosenPlace()))
 
-            data = JSON.parse(localStorage.getItem(getChosenPlace()))
-
-            generateFreshDiv("room", Object.keys(data))
+            generateFreshDiv("room", Object.keys(data), showDiv)
             
-        /*
-                buttons = document.createElement('div')
-                buttons.id = "roomButtons"
-
-                if(localStorage.getItem(getChosenPlace()) != ""){
-                    data = JSON.parse(localStorage.getItem(getChosenPlace()))
-                
-                    allRooms = Object.keys(data)
-
-                    for(room in allRooms){
-                        newButton = document.createElement('button')
-                        newButton.onclick = function() {setChosenRoom(this.innerHTML); cycleDivs("Objects") }
-                        newButton.appendChild(document.createTextNode(allRooms[room]))
-                        buttons.appendChild(newButton)
-                    }
-                }else{
-                    buttons.innerHTML += "This place is empty"
-                }
-            if(document.getElementById("roomButtons") == null){
-                showDiv.appendChild(buttons)
-            }else{
-                showDiv.replaceChild(buttons, document.getElementById('roomButtons'))
-            }
-            */
         break;
 
         case "Objects":
+            // displays all storage objects/furniture in a chosen place's chosen room
+            var data = JSON.parse(localStorage.getItem(getChosenPlace()))
 
-            data = JSON.parse(localStorage.getItem(getChosenPlace()))
-
-            generateFreshDiv("object", Object.keys(data[getChosenRoom()]))
+            generateFreshDiv("object", Object.keys(data[getChosenRoom()]), showDiv)
     
         break;
 
         case "Items":
-            data = JSON.parse(localStorage.getItem(getChosenPlace()))
+            //displays all items from a chosen furniture piece
 
-            if(data[getChosenRoom()][getChosenObject()].length == undefined){
+            var data = JSON.parse(localStorage.getItem(getChosenPlace()))
 
-            items = Object.keys(data[getChosenRoom()][getChosenObject()])
+            if(data[getChosenRoom()][getChosenObject()].length == undefined){ 
+            /* 
+            checks if the item list is an object or an array
+            TODO: Make all item lists object lists and allow the ability to add attributes to items
+            */
+
+                var items = Object.keys(data[getChosenRoom()][getChosenObject()])
             }else{
-                items = data[getChosenRoom()][getChosenObject()]
+                var items = data[getChosenRoom()][getChosenObject()]
             }
-
-            listEl = document.createElement('ul')
+            // creates the unordered list element that displays the items
+            var listEl = document.createElement('ul')
             listEl.id ="itemList"
             
 
             for(itemName in items){
 
-                itemEl = document.createElement('li')
-
-                if(data[getChosenRoom()][getChosenObject()].length != undefined){
+                var itemEl = document.createElement('li')
+                /* checks the item list type again, at this point the only difference between list items is that one counts the items, 
+                    while the other is only a string array, merely displaying the items presence*/
+                if(data[getChosenRoom()][getChosenObject()].length != undefined){ 
                     itemEl.appendChild(document.createTextNode(items[itemName]))
                 }else{
                     itemEl.appendChild(document.createTextNode(items[itemName] + ": " + data[getChosenRoom()][getChosenObject()][items[itemName]]))
@@ -536,8 +567,9 @@ function cycleDivs(currentDiv){
             }
 
 
-            prevItemList = document.getElementById("itemList")
+            var prevItemList = document.getElementById("itemList")
 
+            // appends or replaces the unordered list
             if(prevItemList == null){
                 document.getElementById('Items').appendChild(listEl)
             }else{
@@ -546,28 +578,41 @@ function cycleDivs(currentDiv){
     }
 }
 
+// capitalizes a given word
 function capitalizeWord(theWord){
     return theWord.replace(/^\w/, (c) => c.toUpperCase());
 }
 
+//Returns the next state of navigation
 function getNextState(currentState){
-    states = ["Places", "Rooms", "Objects", "Items"]
-    currentIndex = states.indexOf(currentState)
+    var states = ["Places", "Rooms", "Objects", "Items"]
+    var currentIndex = states.indexOf(currentState)
 
     return states[currentIndex + 1]
 
 }
 
+/*
+generateFreshDiv
+Refreshes a traversal div's information
+*/
 
-function generateFreshDiv(caseType, dataObj){
+function generateFreshDiv(caseType, dataObj, dumpDiv){
 
-    buttons = document.createElement('div')
+    //initializes the div that will hold the value buttons
+    var buttons = document.createElement('div')
 
-    buttons.id = caseType + "Buttons"
+    buttons.id = caseType + "Buttons" // TODO: change this to .classList.add('')
 
-    capitalizedCase = capitalizeWord(caseType)
-    functionName = "setChosen" + capitalizedCase
+    // Capitalizes the given case type and sets it up as a function name
+    var capitalizedCase = capitalizeWord(caseType)
+    var functionName = "setChosen" + capitalizedCase
 
+    /* iterates through the items and assigns them:
+            -their value from the database
+            -their onclick function that sets the chosen variable for the given cases and
+             has the user move on to the next traversal div
+    */
 
     for(item in dataObj){
         newButton = document.createElement('button')
@@ -576,6 +621,8 @@ function generateFreshDiv(caseType, dataObj){
         buttons.appendChild(newButton)
     }
 
+    /* adds an "add" button to the end of the generated list
+        TODO: implement these add buttons*/
 
     addButton = document.createElement('button')
     addText = document.createTextNode('+')
@@ -583,15 +630,18 @@ function generateFreshDiv(caseType, dataObj){
     buttons.appendChild(addButton)
 
 
+    //chooses if it replaces or add the buttons div
     if(document.getElementById(caseType + "Buttons") == null){
-        showDiv.appendChild(buttons)
+        dumpDiv.appendChild(buttons)
     }else{
-        showDiv.replaceChild(buttons, document.getElementById(caseType + 'Buttons'))
+        dumpDiv.replaceChild(buttons, document.getElementById(caseType + 'Buttons'))
     }
 
 
 
 }
+
+// Setters and getters for each traversal variable choice
 
 function setChosenPlace(placeName){
     localStorage.setItem("chosenPlace", placeName)
